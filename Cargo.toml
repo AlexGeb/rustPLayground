@@ -1,0 +1,19 @@
+[package]
+
+name = "rust_playground"
+version = "0.0.1"
+authors = [ "Alexandre Behaghel <alex.behaghel@gmail.com>" ]
+
+[dependencies]
+graphql_client = "0.9.0"
+anyhow = "*"
+serde = "^1.0"
+reqwest = "^0.9"
+prettytable-rs = "^0.7"
+structopt = "^0.3"
+dotenv = "^0.13"
+envy = "^0.3"
+log = "^0.4"
+env_logger = "^0.5"
+hello_macro = { path = "../hello_macro" }
+hello_macro_derive = { path = "../hello_macro/hello_macro_derive" }

@@ -1,0 +1,46 @@
+query RepoView($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    homepageUrl
+    stargazers {
+      totalCount
+    }
+    issues(first: 20) {
+      nodes {
+        title
+        comments {
+          totalCount
+        }
+      }
+    }
+    pullRequests(first: 20) {
+      nodes {
+        author {
+          __typename
+          ... on User {
+            login
+            name
+          }
+          ... on Bot {
+            login
+          }
+          ... on EnterpriseUserAccount {
+            login
+          }
+          ... on Organization {
+            login
+          }
+          ... on Mannequin {
+            login
+          }
+        }
+        title
+        commits {
+          totalCount
+        }
+        comments {
+          totalCount
+        }
+      }
+    }
+  }
+}
