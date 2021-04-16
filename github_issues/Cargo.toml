@@ -8,14 +8,14 @@ edition = "2018"
 
 [dependencies]
 graphql_client = "0.9.0"
-anyhow = "*"
-serde = "^1.0"
-reqwest = "^0.9"
-prettytable-rs = "^0.7"
-structopt = "^0.3"
-dotenv = "^0.13"
-envy = "^0.3"
-log = "^0.4"
-env_logger = "^0.5"
+anyhow = "1.0.40"
+serde = "1.0.125"
+reqwest = { version = "0.11.2", features = ["json", "blocking"] }
+prettytable-rs = "0.8.0"
+structopt = "0.3.21"
+dotenv = "0.15.0"
+envy = "0.4.2"
+log = "0.4.14"
+env_logger = "0.8.3"
 hello_macro = { path = "../hello_macro" }
 hello_macro_derive = { path = "../hello_macro_derive" }

@@ -29,7 +29,7 @@ struct Env {
 
 fn parse_repo_name(repo_name: &str) -> Result<(&str, &str), anyhow::Error> {
     match repo_name.split('/').take(2).collect::<Vec<&str>>()[..] {
-        [owner, name] => return Ok((owner, name)),
+        [owner, name] => Ok((owner, name)),
         _ => Err(format_err!("wrong format for the repository name param (we expect something like facebook/graphql)"))
     }
 }
@@ -38,7 +38,7 @@ pub fn request() -> Result<(), anyhow::Error> {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    let config: Env = envy::from_env().context("while reading from environment")?;
+    let Env { github_api_token } = envy::from_env().context("while reading from environment")?;
 
     let args = Command::from_args();
 
@@ -50,16 +50,21 @@ pub fn request() -> Result<(), anyhow::Error> {
         name: name.to_string(),
     });
 
-    let client = reqwest::Client::new();
+    let client = reqwest::blocking::Client::new();
 
-    let mut res = client
+    let res = client
         .post("https://api.github.com/graphql")
-        .bearer_auth(config.github_api_token)
+        .bearer_auth(&github_api_token)
         .json(&q)
         .send()?;
 
+    if !res.status().is_success() {
+        Err(format_err!(res.status()))?;
+    }
+
     let Response { data, errors }: Response<repo_view::ResponseData> = res.json()?;
     info!("{:?}", data);
+    info!("{:?}", &errors);
 
     match errors {
         Some(errors) => Err(anyhow!(
@@ -70,6 +75,7 @@ pub fn request() -> Result<(), anyhow::Error> {
         )),
         None => Ok(()),
     }?;
+
     let response_data: repo_view::ResponseData = data.expect("Unexpected: missing response data");
 
     let stars: Option<i64> = response_data
